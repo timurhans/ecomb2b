@@ -71,6 +71,8 @@ def product_list_view(request,colecao,categoria,subcategoria):
 
 def product_list_view_drop(request):
 
+    page_size = 24
+
     if request.user.is_authenticated:
 
         try:
@@ -93,11 +95,11 @@ def product_list_view_drop(request):
             cat = ''
             subcat = ''
 
-        paginator = Paginator(queryset, 12)
+        paginator = Paginator(queryset, page_size)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
-        if len(queryset)>12:
+        if len(queryset)>page_size:
             is_paginated = True
         else:
             is_paginated = False

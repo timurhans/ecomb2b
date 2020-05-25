@@ -404,11 +404,11 @@ def cats_subcats():
         from 
         PRODUTOS_CATEGORIA pc left join
         PRODUTOS_SUBCATEGORIA psc on pc.COD_CATEGORIA=psc.COD_CATEGORIA
-        where
-        pc.CATEGORIA_PRODUTO <> 'ENTREGA'
+        
+        
         order by pc.CATEGORIA_PRODUTO
     """
-
+    "where pc.CATEGORIA_PRODUTO <> 'ENTREGA'"
     categorias = pd.read_sql(query,conn)
 
     categorias['CATEGORIA_PRODUTO'] = categorias['CATEGORIA_PRODUTO'].str.strip()
@@ -421,15 +421,18 @@ def cats_subcats():
     for index,row in categorias.iterrows():
         if cat.cat == 'PRIMEIRO':
             cat.cat = row['CATEGORIA_PRODUTO']
-            cat.subcats.append(row['SUBCATEGORIA_PRODUTO'])
+            if cat.cat == 'MASCULINO':
+                cat.subcats.append(row['SUBCATEGORIA_PRODUTO'])
         elif cat.cat == row['CATEGORIA_PRODUTO']:
-            cat.subcats.append(row['SUBCATEGORIA_PRODUTO'])
+            if cat.cat == 'MASCULINO':
+                cat.subcats.append(row['SUBCATEGORIA_PRODUTO'])
         else:
             cats.append(cat)
             cat = Produto()
             cat.subcats =[]
             cat.cat = row['CATEGORIA_PRODUTO']
-            cat.subcats.append(row['SUBCATEGORIA_PRODUTO'])
+            if cat.cat == 'MASCULINO':
+                cat.subcats.append(row['SUBCATEGORIA_PRODUTO'])
 
 
     return cats

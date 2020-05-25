@@ -20,10 +20,12 @@
                 
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     {% for cat in categorias %}
-                    <a class="dropdown-header" href="../../?colecao={{ col }}&categoria={{ cat.cat }}">{{ cat.cat }}</a>
-                      {% for sub in cat.subcats %}
-                      <a class="dropdown-item" href="../../?colecao={{ col }}&categoria={{ cat.cat }}&subcategoria={{ sub }}">{{ sub }}</a>
-                      {% endfor %}
+                    <div class='col my-3'>
+                      <a class="dropdown-header" href="../../?colecao={{ col }}&categoria={{ cat.cat }}">{{ cat.cat }}</a>
+                        {% for sub in cat.subcats %}
+                        <a class="dropdown-item" href="../../?colecao={{ col }}&categoria={{ cat.cat }}&subcategoria={{ sub }}">{{ sub }}</a>
+                        {% endfor %}
+                    </div>
                     {% endfor %}
                 </div>
               </div>
@@ -39,7 +41,8 @@
 
 <div class='row'>
     {% for instance in page_obj %}
-        <div class='col my-3'>
+    <div class="col-lg-3 col-md-6 mb-4">
+        <!-- <div class='col my-3'> -->
             <div class="card">
                 <div class="card-body-fluid">
                     <h5 class="card-title">{{ instance.produto }}</h5>
