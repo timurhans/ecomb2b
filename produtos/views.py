@@ -2,22 +2,63 @@ from django.shortcuts import render,redirect
 from django.core.paginator import Paginator
 from django.views.generic import ListView
 from django.contrib.auth import authenticate, login, logout
-from .ondas import Produto,Estoque,produtos,produtos_col,categorias
+from .ondas import (Produto,Estoque,produtos,
+produtos_col,categorias,produtos_col_cat,subcategorias,
+produtos_col_cat_subcat,cats_subcats)
 from .forms import LoginForm
 import time
 
 # Create your views here.
 
 
-def product_list_view(request):
+def home_view(request):
 
     if request.user.is_authenticated:
 
-        try:
-            col = request.GET['colecao']
-            queryset = produtos_col(tabela=request.user.first_name,colecao=col)
-        except:
-            queryset =[]
+        context = {
+        'colecoes' : ['1902','2001']
+        }
+
+        return render(request,"produtos/home.html",context)
+    else:
+        print(request)
+        return redirect('/login')
+
+def colecao_view(request,colecao):
+
+    if request.user.is_authenticated:
+        cats = categorias()
+        context = {
+        'categorias' : cats
+        }
+
+        return render(request,"produtos/colecao.html",context)
+    else:
+        print(request)
+        return redirect('/login')
+
+def categoria_view(request,colecao,categoria):
+
+    if request.user.is_authenticated:
+        cats = subcategorias(categoria)
+        context = {
+        'subcategorias' : cats
+        }
+
+        return render(request,"produtos/categoria.html",context)
+    else:
+        print(request)
+        return redirect('/login')
+
+
+def product_list_view(request,colecao,categoria,subcategoria):
+
+    if request.user.is_authenticated:
+
+
+        queryset = produtos_col_cat_subcat(tabela=request.user.first_name,
+        colecao=colecao,categoria=categoria,subcategoria=subcategoria)
+
 
         context = {
         'object_list' : queryset
@@ -34,10 +75,23 @@ def product_list_view_drop(request):
 
         try:
             col = request.GET['colecao']
-            queryset = produtos_col(tabela=request.user.first_name,colecao=col)
+            cat = request.GET['categoria']
+            queryset = produtos_col_cat(tabela=request.user.first_name,
+                colecao=col,categoria=cat)
+            try:
+                subcat = request.GET['subcategoria']
+                queryset = produtos_col_cat_subcat(tabela=request.user.first_name,
+                colecao=col,categoria=cat,subcategoria=subcat)
+            except:
+                queryset = produtos_col_cat(tabela=request.user.first_name,
+                colecao=col,categoria=cat)
+                subcat = ''
+            
         except:
             queryset =[]
             col = ''
+            cat = ''
+            subcat = ''
 
         paginator = Paginator(queryset, 12)
         page_number = request.GET.get('page')
@@ -48,15 +102,16 @@ def product_list_view_drop(request):
         else:
             is_paginated = False
 
-        cats = categorias()
-        print(cats)
+        cats = cats_subcats()
         context = {
         'object_list' : queryset,
         'categorias' : cats,
         'colecoes' : ['1902','2001'],
         'page_obj': page_obj,
         'is_paginated' : is_paginated,
-        'selected_col' : col
+        'selected_col' : col,
+        'selected_cat' : cat,
+        'selected_subcat' : subcat
         }
 
         return render(request,"produtos/lista_prods_drop.html",context)

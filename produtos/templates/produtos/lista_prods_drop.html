@@ -13,9 +13,6 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
             {% for col in colecoes %}
-              <li class="nav-item active">
-                  <a class="nav-link" href="../../?colecao={{ col }}" >{{ col }} <span class="sr-only">(current)</span></a>
-              </li>
               <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{ col }}
@@ -23,7 +20,10 @@
                 
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     {% for cat in categorias %}
-                    <a class="dropdown-item" href="../../?colecao={{ cat }}&categoria={{ cat }}">{{ cat }}</a>
+                    <a class="dropdown-header" href="../../?colecao={{ col }}&categoria={{ cat.cat }}">{{ cat.cat }}</a>
+                      {% for sub in cat.subcats %}
+                      <a class="dropdown-item" href="../../?colecao={{ col }}&categoria={{ cat.cat }}&subcategoria={{ sub }}">{{ sub }}</a>
+                      {% endfor %}
                     {% endfor %}
                 </div>
               </div>
@@ -98,10 +98,17 @@
 
     {% if page_obj.has_next %}
     <li class="page-item">
-      <a class="page-link" href="?page={{ page_obj.next_page_number }}&colecao={{ selected_col }}" aria-label="Next">
+      {% if selected_subcat == '' %}
+      <a class="page-link" href="?page={{ page_obj.next_page_number }}&colecao={{ selected_col }}&categoria={{ selected_cat }}" aria-label="Next">
         <span aria-hidden="true">&raquo;</span>
         <span class="sr-only">Next</span>
       </a>
+      {% else %}
+      <a class="page-link" href="?page={{ page_obj.next_page_number }}&colecao={{ selected_col }}&categoria={{ selected_cat }}&subcategoria={{ selected_subcat }}"" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+        <span class="sr-only">Next</span>
+      </a>
+      {% endif %}
     </li>
     {% endif %}
   </ul>
