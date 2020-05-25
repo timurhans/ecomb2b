@@ -1,4 +1,6 @@
 from django.shortcuts import render,redirect
+from django.core.paginator import Paginator
+from django.views.generic import ListView
 from django.contrib.auth import authenticate, login, logout
 from .ondas import Produto,Estoque,produtos,produtos_col,categorias
 from .forms import LoginForm
@@ -35,13 +37,26 @@ def product_list_view_drop(request):
             queryset = produtos_col(tabela=request.user.first_name,colecao=col)
         except:
             queryset =[]
+            col = ''
+
+        paginator = Paginator(queryset, 12)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        if len(queryset)>12:
+            is_paginated = True
+        else:
+            is_paginated = False
 
         cats = categorias()
         print(cats)
         context = {
         'object_list' : queryset,
         'categorias' : cats,
-        'colecoes' : ['1902','2001']
+        'colecoes' : ['1902','2001'],
+        'page_obj': page_obj,
+        'is_paginated' : is_paginated,
+        'selected_col' : col
         }
 
         return render(request,"produtos/lista_prods_drop.html",context)
@@ -75,3 +90,4 @@ def logout_view(request):
 
     logout(request)
     return redirect('home')
+
