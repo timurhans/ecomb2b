@@ -26,6 +26,8 @@ SECRET_KEY = '2yoc2zy&ptn^+vwc0#9_^ovb6j$6+liv6h@)(h@_urjxqaxf%f'
 DEBUG = True
 
 # ALLOWED_HOSTS = ['192.168.18.5','0.0.0.0']
+# ALLOWED_HOSTS = ['172.16.1.2','0.0.0.0']
+
 ALLOWED_HOSTS = ['127.0.0.1']
 
 
@@ -82,6 +84,12 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
